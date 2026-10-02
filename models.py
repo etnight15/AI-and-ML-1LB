@@ -118,6 +118,29 @@ def main():
         space_name=f"Исходные признаки ({len(feature_names)})",
     )
 
+    def plot_residuals(preds_dict, y_true, title_prefix):
+        names = list(preds_dict.keys())
+        fig, axes = plt.subplots(1, len(names), figsize=(5.2 * len(names), 4.5), sharey=True)
+        if len(names) == 1:
+            axes = [axes]
+        for ax, name in zip(axes, names):
+            y_hat = np.asarray(preds_dict[name])
+            resid = np.asarray(y_true) - y_hat
+            ax.scatter(y_hat, resid, alpha=0.35, edgecolor="none", color="#2b5c8f", s=18)
+            ax.axhline(0, color="red", linestyle="--", linewidth=2, label="Нулевой остаток (e = 0)")
+            ax.set_xlabel("Прогноз цены")
+            ax.set_ylabel("Остаток (факт - прогноз)")
+            ax.set_title(f"{title_prefix}: {name}")
+            ax.legend(fontsize=8)
+            ax.grid(True, alpha=0.25)
+        plt.tight_layout()
+        if show_plots:
+            plt.show()
+        plt.close()
+
+    plot_residuals(preds_orig, y_test, "Остатки (исходные признаки)")
+    print("Вывод: по графикам остатков наблюдается гетероскедастичность (разброс растёт с прогнозом).")
+
     pca_full = PCA(random_state=RANDOM_STATE).fit(X_train_scaled)
     eigenvalues = pca_full.explained_variance_
     exp_var_ratio = pca_full.explained_variance_ratio_
@@ -173,6 +196,9 @@ def main():
         y_test,
         space_name=f"Главные компоненты ({k_opt})",
     )
+
+    plot_residuals(preds_pca, y_test, "Остатки (PCA)")
+    print("После PCA гетероскедастичность остатков сохраняется.")
 
     summary = pd.concat([results_orig, results_pca], ignore_index=True)
     summary_sorted = summary.sort_values("R2_Test", ascending=False).reset_index(drop=True)
