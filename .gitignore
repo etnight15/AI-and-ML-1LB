@@ -1,4 +1,5 @@
 archive.zip
+build_notebook.py
 __pycache__/
 *.pyc
 .ipynb_checkpoints/

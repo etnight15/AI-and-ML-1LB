@@ -207,7 +207,7 @@ def main():
             "Lasso": fitted_orig["Lasso"].coef_,
         }
     )
-    weights_df.to_csv("laba1_weights.csv", index=False)
+    weights_df.to_csv("weights.csv", index=False)
 
     payload = {
         "dataset": "data/cardekho.csv",
@@ -222,7 +222,7 @@ def main():
     with open("laba1_model_weights.json", "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
 
-    print("\nСохранено: laba1_weights.csv, laba1_model_weights.json")
+    print("\nСохранено: weights.csv, laba1_model_weights.json")
 
 
 if __name__ == "__main__":
